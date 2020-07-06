@@ -1,0 +1,123 @@
+<!--
+=========================================================
+Material Dashboard - v2.1.2
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-dashboard
+Copyright 2020 Creative Tim (https://www.creative-tim.com)
+Coded by Creative Tim
+
+=========================================================
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script>
+  function update() {
+    $.post({
+      url:"/patient/update",
+      data:{
+        name:$("#name").val(),
+        password:$("#passWord").val(),
+        age:$("#age").val(),
+        sex:$("#sex").val()
+      },
+      success:function (data) {
+        md.showNotification('top','center',data);
+      },
+      error:function (data) {
+        md.showNotification('top','center',data);
+      }
+    })
+  }
+</script>
+
+<head>
+  <!--head公共头部-->
+  <div th:insert="~{common::head(title='患者您好')}"></div>
+</head>
+
+<body class="">
+  <div class="wrapper ">
+    <!--sidebar公共侧边栏-->
+    <div th:insert="~{common::sidebar(nav='patient/update')}"></div>
+    <!--end sidebar-->
+    <div class="main-panel">
+      <!-- navbar公共顶栏 -->
+      <div th:insert="~{common::navbar}"></div>
+      <!--end navbar-->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">个人信息</h4>
+                  <p class="card-category">修改你的个人信息</p>
+                </div>
+                <div class="card-body">
+                  <form th:action="@{/patient/update}">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">权限（不能修改）</label>
+                          <input type="text" class="form-control" disabled th:value="${patientInfo.getUser().getPermission()}">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">姓名</label>
+                          <input name="name" id="name" type="text" class="form-control" th:value="${patientInfo.getName()}" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">用户名（不能修改）</label>
+                          <input type="text" class="form-control" disabled th:value="${patientInfo.getUser().getUsername()}">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">密码</label>
+                          <input name="password" id="passWord" type="text" class="form-control" th:value="${patientInfo.getUser().getPassword()}" required>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">年龄</label>
+                          <input name="age" type="number" id="age" class="form-control" th:value="${patientInfo.getAge()}" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label class="bmd-label-floating">性别</label>
+                          <input name="sex" type="text" id="sex" class="form-control" th:value="${patientInfo.getSex()}" required>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary pull-right" onclick="update()">
+                      确认修改
+                    </button>
+                    <div class="clearfix"></div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--footer公共底栏-->
+      <div th:insert="~{common::footer}"></div>
+      <!--end footer-->
+    </div>
+  </div>
+  <!--plugin公共悬浮插件-->
+  <div th:insert="~{common::plugin}"></div>
+  <!--公共JS-->
+  <div th:insert="~{common::publicJs}"></div>
+</body>
+
+</html>

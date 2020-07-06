@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.UserMapper">
+    <!--根据用户名查询用户（shiro登录用）-->
+    <select id="selectUserByUsername" parameterType="string" resultType="User">
+        SELECT
+            *
+        FROM
+            user
+        WHERE
+            username=#{username}
+    </select>
+    <insert id="insertUser" parameterType="User" keyProperty="uid" useGeneratedKeys="true">
+        INSERT INTO
+            user
+            (username,password,permission)
+        VALUES
+            (#{username},#{password},#{permission})
+    </insert>
+    <update id="updateUser" parameterType="User">
+        UPDATE
+            user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test=" password!=null and password!='' ">
+                password=#{password},
+            </if>
+            <if test=" permission!=null and permission!='' ">
+                permission=#{permission}
+            </if>
+        </trim>
+        WHERE
+            uid=#{uid}
+    </update>
+    <delete id="deleteUser" parameterType="integer">
+        DELETE
+        FROM
+            user
+        WHERE
+            uid=#{uid}
+    </delete>
+</mapper>

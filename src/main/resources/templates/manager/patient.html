@@ -1,0 +1,257 @@
+<!--
+=========================================================
+Material Dashboard - v2.1.2
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-dashboard
+Copyright 2020 Creative Tim (https://www.creative-tim.com)
+Coded by Creative Tim
+
+=========================================================
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!--head公共头部-->
+  <div th:insert="~{common::head(title='管理员您好')}"></div>
+</head>
+<script>
+  //给modal的Input隐藏域赋值
+  $("#updateModal").modal("hide");
+  //给modal的数据赋初值
+  function setUpdate(PATIENT) {
+    $("#updateUserName").val(PATIENT.user.username);
+    $("#updatePassWord").val(PATIENT.user.password);
+    $("#updateName").val(PATIENT.name);
+    $("#updateAge").val(PATIENT.age);
+    $("#updateSex").val(PATIENT.sex);
+    $("#updatePid").val(PATIENT.pid);
+  };
+  //Ajax向后端发起请求：updatePatient(修改患者信息)
+  function updatePatient(){
+    var form=new FormData();
+    form.append("password",$("#updatePassWord").val());
+    form.append("name",$("#updateName").val());
+    form.append("age",$("#updateAge").val());
+    form.append("sex",$("#updateSex").val());
+    form.append("pid",$("#updatePid").val());
+    $.post({
+      url:"/manager/updatePatient",
+      data:form,
+      cache:false,
+      async:false,
+      processData:false,
+      contentType:false,
+      success:function (data) {
+        console.log(data)
+        alert(data);
+      },
+      error:function (data) {
+        alert(data);
+      }
+    })
+  };
+  $("#deleteModal").modal("hide");
+  function setDelete(PATIENT) {
+    $("#deleteName").val(PATIENT.name);
+    $("#deletePid").val(PATIENT.pid);
+  };
+  function deletePatient() {
+    $.post({
+      url:'/manager/deletePatient',
+      data:{
+        pid:$('#deletePid').val()
+      },
+      success:function (data) {
+        console.log(data)
+        alert(data);
+      },
+      error:function (data) {
+        alert(data);
+      }
+    })
+  }
+</script>
+<body class="">
+  <div class="wrapper ">
+    <!--sidebar公共侧边栏-->
+    <div th:insert="~{common::sidebar(nav='manager/patient')}"></div>
+    <!--end sidebar-->
+    <div class="main-panel">
+      <!-- navbar公共顶栏 -->
+      <div th:insert="~{common::navbar}"></div>
+      <!--end navbar-->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">患者管理</h4>
+                  <p class="card-category"> 你可以在这里查看所有的患者信息</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class=" text-primary">
+                      <th>
+                        患者编号
+                      </th>
+                      <th>
+                        登录用户名
+                      </th>
+                      <th>
+                        登录密码
+                      </th>
+                      <th>
+                        患者名字
+                      </th>
+                      <th>
+                        患者年龄
+                      </th>
+                      <th>
+                        患者性别
+                      </th>
+                      <th>
+                        操作
+                      </th>
+                      </thead>
+                      <tbody>
+                      <tr th:each="patient:${patientInfoList}">
+                        <td class="text-primary" th:text="${patient.getPid()}">
+                          1
+                        </td>
+                        <td th:text="${patient.getUser().getUsername()}">
+                          username
+                        </td>
+                        <td th:text="${patient.getUser().getPassword()}">
+                          password
+                        </td>
+                        <td th:text="${patient.getName()}">
+                          name
+                        </td>
+                        <td th:text="${patient.getAge()}">
+                          age
+                        </td>
+                        <td th:text="${patient.getSex()}">
+                          sex
+                        </td>
+                        <td>
+                          <!-- 按钮：用于打开修改模态框 -->
+                          <button type="button" class="btn btn-normal pull-center" data-toggle="modal" data-target="#updateModal" th:onclick="setUpdate([[${patient}]])">
+                            修改
+                          </button>
+                          <!-- 按钮：用于打开删除模态框 -->
+                          <button type="button" class="btn btn-danger pull-center" data-toggle="modal" data-target="#deleteModal" th:onclick="setDelete([[${patient}]])">
+                            删除
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 修改病人信息模态框 -->
+      <div class="modal fade" id="updateModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">修改病人信息</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="">
+                <label class="bmd-label">请确认患者的登录用户名</label>
+                <input type="text" name="updateUserName" id="updateUserName" class="form-control disabled" autocomplete="off" disabled>
+              </div>
+              <div class="">
+                <label class="bmd-label">修改患者的登录密码</label>
+                <input type="text" name="updatePassWord" id="updatePassWord" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label class="bmd-label">修改患者的名字</label>
+                <input type="text" name="updateName" id="updateName" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label class="bmd-label">修改患者的年龄</label>
+                <input type="number" name="updateAge" id="updateAge" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label class="bmd-label">修改患者的性别</label>
+                <select class="custom-select" id="updateSex">
+                  <option value="男">男</option>
+                  <option value="女">女</option>
+                </select>
+              </div>
+            </div>
+            <input type="hidden" name="updatePid" id="updatePid">
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updatePatient()">确认修改</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- end modal -->
+
+      <!-- 删除病人信息模态框 -->
+      <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">确认要删除该病人吗</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="">
+                <label class="bmd-label">确认要删除的患者的名字</label>
+                <input type="text" name="deleteName" id="deleteName" class="form-control disabled" disabled>
+              </div>
+            </div>
+            <input type="hidden" name="deletePid" id="deletePid">
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deletePatient()">确认删除</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- end modal -->
+
+      <!--footer公共底栏-->
+      <div th:insert="~{common::footer}"></div>
+      <!--end footer-->
+    </div>
+  </div>
+  <!--plugin公共悬浮插件-->
+  <div th:insert="~{common::plugin}"></div>
+  <!--公共JS-->
+  <div th:insert="~{common::publicJs}"></div>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
+    });
+  </script>
+</body>
+
+</html>

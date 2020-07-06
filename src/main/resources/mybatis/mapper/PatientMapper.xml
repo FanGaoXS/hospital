@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.PatientMapper">
+    <insert id="insertPatient" parameterType="PatientInfo">
+        INSERT INTO
+            patient_info
+            (pid,pname,age,sex)
+        VALUES
+            (#{pid},#{name},#{age},#{sex})
+    </insert>
+    <update id="updatePatient" parameterType="PatientInfo">
+        UPDATE
+            patient_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test=" name!=null and name!='' ">
+                pname=#{name},
+            </if>
+            <if test=" age!=null and age!='' ">
+                age=#{age},
+            </if>
+            <if test=" sex!=null and sex!='' ">
+                sex=#{sex},
+            </if>
+        </trim>
+        WHERE
+            pid=#{pid}
+    </update>
+    <delete id="deletePatient" parameterType="integer">
+        DELETE
+        FROM
+            patient_info
+        WHERE
+            pid=#{pid}
+    </delete>
+    <select id="selectAllPatient" resultMap="PatientMap">
+        SELECT
+            p.*,u.*
+        FROM
+            patient_info p,
+            user u
+        WHERE
+            p.pid=u.uid
+    </select>
+    <!--病人信息结果集-->
+    <resultMap id="PatientMap" type="PatientInfo">
+        <id property="pid" column="pid"/>
+        <result property="name" column="pname"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <association property="user" javaType="User">
+            <result property="username" column="username"/>
+            <result property="password" column="password"/>
+            <result property="permission" column="permission"/>
+        </association>
+    </resultMap>
+    <select id="selectPatientByPid" parameterType="integer" resultMap="PatientMap">
+        SELECT
+            p.*,u.*
+        FROM
+            patient_info p,
+            user u
+        WHERE
+            p.pid=#{pid}
+        AND p.pid=u.uid
+    </select>
+
+</mapper>

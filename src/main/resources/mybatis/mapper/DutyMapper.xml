@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.DutyMapper">
+    <select id="selectAllDuty" resultMap="DutyMap">
+        SELECT
+            *
+        FROM
+            duty
+    </select>
+    <resultMap id="DutyMap" type="Duty">
+        <id column="did" property="did"/>
+        <!--column是数据库中字段，property是pojo中字段-->
+        <result column="Monday_a" property="mondayA"/>
+        <result column="Monday_p" property="mondayP"/>
+        <result column="Tuesday_a" property="tuesdayA"/>
+        <result column="Tuesday_p" property="tuesdayP"/>
+        <result column="Wednesday_a" property="wednesdayA"/>
+        <result column="Wednesday_p" property="wednesdayP"/>
+        <result column="Thursday_a" property="thursdayA"/>
+        <result column="Thursday_p" property="thursdayP"/>
+        <result column="Friday_a" property="fridayA"/>
+        <result column="Friday_p" property="fridayP"/>
+    </resultMap>
+    <select id="selectDutyByDid" parameterType="int" resultMap="DutyMap">
+        SELECT
+            *
+        FROM
+            duty
+        WHERE
+            did=#{did}
+    </select>
+    <update id="updateDutyByDid" parameterType="Duty">
+        UPDATE
+            duty
+        <trim prefix="SET" suffixOverrides=",">
+
+            <if test=" mondayA!=null and mondayA!='' ">
+                Monday_a=#{mondayA},
+            </if>
+
+            <if test=" mondayP!=null and mondayP!='' ">
+                Monday_p=#{mondayP},
+            </if>
+
+            <if test=" tuesdayA!=null and tuesdayA!='' ">
+                Tuesday_a=#{tuesdayA},
+            </if>
+
+            <if test=" tuesdayP!=null and tuesdayP!='' ">
+                Tuesday_p=#{tuesdayP},
+            </if>
+
+            <if test=" wednesdayA!=null and wednesdayA!='' ">
+                Wednesday_a=#{wednesdayA},
+            </if>
+
+            <if test=" wednesdayP!=null and wednesdayP!='' ">
+                Wednesday_p=#{wednesdayP},
+            </if>
+
+            <if test=" thursdayA!=null and thursdayA!='' ">
+                Thursday_a=#{thursdayA},
+            </if>
+
+            <if test=" thursdayP!=null and thursdayP!='' ">
+                Thursday_p=#{thursdayP},
+            </if>
+
+            <if test=" fridayA!=null and fridayA!='' ">
+                Friday_a=#{fridayA},
+            </if>
+
+            <if test=" fridayP!=null and fridayP!='' ">
+                Friday_p=#{fridayP},
+            </if>
+        </trim>
+        WHERE
+            did=#{did}
+    </update>
+</mapper>

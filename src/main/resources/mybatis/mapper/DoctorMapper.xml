@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.DoctorMapper">
+    <select id="selectAllDoctor" resultMap="DoctorMap">
+        SELECT
+            *
+        FROM
+            doctor_info d,
+            user u,
+            dept2 d2,
+            duty du
+        WHERE
+            d.did=u.uid
+        AND d2.dept2_id=d.dept2_id
+        AND du.did=d.did
+    </select>
+    <!--医师信息结果集-->
+    <resultMap id="DoctorMap" type="DoctorInfo">
+        <id property="did" column="did"/>
+        <result property="name" column="dname"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <result property="dept2_id" column="dept2_id"/>
+        <result property="phone" column="phone"/>
+        <result property="information" column="information"/>
+        <result property="imgPath" column="imgPath"/>
+        <association property="user" javaType="User">
+            <result property="username" column="username"/>
+            <result property="password" column="password"/>
+            <result property="permission" column="permission"/>
+        </association>
+        <association property="dept2" javaType="Dept2">
+            <result property="name" column="dept2_name"/>
+        </association>
+        <association property="duty" javaType="Duty">
+            <id column="did" property="did"/>
+            <!--column是数据库中字段，property是pojo中字段-->
+            <result column="Monday_a" property="mondayA"/>
+            <result column="Monday_p" property="mondayP"/>
+            <result column="Tuesday_a" property="tuesdayA"/>
+            <result column="Tuesday_p" property="tuesdayP"/>
+            <result column="Wednesday_a" property="wednesdayA"/>
+            <result column="Wednesday_p" property="wednesdayP"/>
+            <result column="Thursday_a" property="thursdayA"/>
+            <result column="Thursday_p" property="thursdayP"/>
+            <result column="Friday_a" property="fridayA"/>
+            <result column="Friday_p" property="fridayP"/>
+        </association>
+    </resultMap>
+    <select id="selectDoctorByDid" parameterType="integer" resultMap="DoctorMap">
+        SELECT
+            *
+        FROM
+            doctor_info d,
+            user u,
+            dept2 d2
+        WHERE
+            d.did=#{did}
+        AND d.did=u.uid
+        AND d2.dept2_id=d.dept2_id
+    </select>
+   <insert id="insertDoctor" parameterType="DoctorInfo">
+        INSERT INTO
+            doctor_info
+            (did,dname,sex,age,dept2_id,phone,information,imgPath)
+        VALUES
+            (#{did},#{name},#{sex},#{age},#{dept2_id},#{phone},#{information},#{imgPath})
+    </insert>
+    <update id="updateDoctor" parameterType="DoctorInfo">
+        UPDATE
+            doctor_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test=" name!=null and name!='' ">
+                dname=#{name},
+            </if>
+            <if test=" age!=null and age!='' ">
+                age=#{age},
+            </if>
+            <if test=" sex!=null and sex!='' ">
+                sex=#{sex},
+            </if>
+            <if test=" dept2_id!=null and dept2_id!='' ">
+                dept2_id=#{dept2_id},
+            </if>
+            <if test=" phone!=null and phone!='' ">
+                phone=#{phone},
+            </if>
+            <if test=" information!=null and information!='' ">
+                information=#{information},
+            </if>
+            <if test=" imgPath!=null and imgPath!='' ">
+                imgPath=#{imgPath},
+            </if>
+        </trim>
+        WHERE
+            did=#{did}
+    </update>
+    <delete id="deleteDoctor" parameterType="integer">
+        DELETE
+        FROM
+            doctor_info
+        WHERE
+            did=#{did}
+    </delete>
+    <select id="selectDoctorByDept2Id" parameterType="integer" resultMap="DoctorMap">
+        SELECT
+            *
+        FROM
+            doctor_info d,
+            user u,
+            dept2 d2,
+            duty du
+        WHERE
+            d.did=u.uid
+        AND d2.dept2_id=d.dept2_id
+        AND du.did=d.did
+        AND d.dept2_id=#{dept2Id}
+    </select>
+</mapper>

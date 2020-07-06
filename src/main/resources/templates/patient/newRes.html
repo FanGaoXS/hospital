@@ -1,0 +1,220 @@
+<!--
+=========================================================
+Material Dashboard - v2.1.2
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-dashboard
+Copyright 2020 Creative Tim (https://www.creative-tim.com)
+Coded by Creative Tim
+
+=========================================================
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<script th:inline="javascript">
+  $("#myModal").modal("hide");
+  function Value(DID,NAME) {
+    /*console.log('id='+DID);
+    console.log('name='+NAME);*/
+    /*$.post({
+      url:'/patient/selectDutyByDid',
+      dataType:'json',
+      data:{
+        did:DID
+      },
+      success:function (data) {
+        console.log(data);
+        console.log(data.did);
+        console.log(data.fridayA);
+      }
+    })*/
+    $("#did").val(DID);
+    $("#dname").val(NAME);
+  };
+  function newRes() {
+    console.log("did="+$("#did").val());
+    console.log("select="+$("#select").val());
+    $.post({
+      url:"/patient/newRes",
+      data:{
+        did:$("#did").val(),
+        timeNumber:$("#select").val()
+      },
+      success:function (data) {
+        /*console.log(data);*/
+        md.showNotification('top','center',data);
+      },
+      error:function (data) {
+        md.showNotification('top','center',data+'，请联系管理员');
+      }
+    })
+    /*console.log('did='+$("#did").val());
+    console.log('newRes('+DAY+','+AM+')')*/
+  };
+
+</script>
+
+<head>
+  <!--head公共头部-->
+  <div th:insert="~{common::head(title='患者您好')}"></div>
+</head>
+
+<body class="">
+  <div class="wrapper">
+    <!--sidebar公共侧边栏-->
+    <div th:insert="~{common::sidebar(nav='patient/newRes')}"></div>
+    <!--end sidebar-->
+    <div class="main-panel">
+      <!-- navbar公共顶栏 -->
+      <div th:insert="~{common::navbar}"></div>
+      <!--end navbar-->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-4" th:each="doctor:${doctorInfoList}">
+              <div class="card card-profile">
+                <div class="card-avatar">
+                  <a href="javascript:;">
+                    <img class="img" th:src="${doctor.getImgPath()}" />
+                  </a>
+                </div>
+                <div class="card-body">
+                  <h4 class="card-title" th:text="'医师姓名：'+${doctor.getName()}">name</h4>
+                  <h5 style="color: blue" th:text="'所属科室：'+${doctor.getDept2().getName()}">dept2_name</h5>
+                  <h5 class="card-category text-gray" th:text="'联系方式：'+${doctor.getPhone()}">phone</h5>
+                  <p class="card-description" th:text="${doctor.getInformation()}">
+                    information
+                  </p>
+                  <!--<a href="#" class="btn btn-primary btn-round">预约</a>-->
+                  <!-- 按钮：用于打开模态框 -->
+                  <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" th:onclick="'javascript:Value('+${doctor.getDid()}+','+${doctor.getName()}')'">
+                    打开模态框
+                  </button>-->
+                    <!-- 按钮：用于打开模态框 -->
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" th:onclick="Value([[${doctor.getDid()}]],[[${doctor.getName()}]])">
+                    预约
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 模态框 -->
+      <div class="modal fade" id="myModal">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">预约</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="card-body">
+                <form action="">
+                  <!--DID隐藏域-->
+                  <input type="hidden" id="did" name="did">
+                  <div class="form-group">
+                    <label>请确认你要预约医师</label>
+                    <input type="text" id="dname" disabled class="disabled">
+                  </div>
+                  <div class="form-group">
+                    <label>请确认你要预约的时间段</label>
+                    <!--&lt;!&ndash;按钮组&ndash;&gt;
+                    <div class="btn-group">
+                      &lt;!&ndash;星期一&ndash;&gt;
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          星期一
+                        </button>
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(1,1)">上午</button>
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(1,0)">下午</button>
+                        </div>
+                      </div>
+                      &lt;!&ndash;星期二&ndash;&gt;
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          星期二
+                        </button>
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(2,1)">上午</button>
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(2,0)">下午</button>
+                        </div>
+                      </div>
+                      &lt;!&ndash;星期三&ndash;&gt;
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          星期三
+                        </button>
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(3,1)">上午</button>
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(3,0)">下午</button>
+                        </div>
+                      </div>
+                      &lt;!&ndash;星期四&ndash;&gt;
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          星期四
+                        </button>
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(4,1)">上午</button>
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(4,0)">下午</button>
+                        </div>
+                      </div>
+                      &lt;!&ndash;星期五&ndash;&gt;
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                          星期五
+                        </button>
+                        <div class="dropdown-menu">
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(5,1)">上午</button>
+                          <button class="dropdown-item" data-dismiss="modal" onclick="newRes(5,0)">下午</button>
+                        </div>
+                      </div>
+                    </div>-->
+                    <select class="custom-select" id="select">
+                      <option value="1">两小时以内</option>
+                      <option value="2">两小时到四小时</option>
+                      <option value="3">四小时之后</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+                <!--<div class="dropdown">
+                  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                    预约时间
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">Link 1</a>
+                    <a class="dropdown-item" href="#">Link 2</a>
+                    <a class="dropdown-item" href="#">Link 3</a>
+                  </div>
+                </div>-->
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="newRes()">确认</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--footer公共底栏-->
+      <div th:insert="~{common::footer}"></div>
+      <!--end footer-->
+    </div>
+  </div>
+  <!--plugin公共悬浮插件-->
+  <div th:insert="~{common::plugin}"></div>
+  <!--公共JS-->
+  <div th:insert="~{common::publicJs}"></div>
+</body>
+
+</html>

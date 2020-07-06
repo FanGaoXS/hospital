@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.Dept2Mapper">
+    <select id="selectAllDept2" resultMap="Dept2Map">
+        SELECT
+            d1.*,
+            d2.*
+        FROM
+            dept2 d2,
+            dept1 d1,
+            dept1_dept2 d1_d2
+        WHERE
+            d1.dept1_id=d1_d2.dept1_id
+            AND d2.dept2_id=d1_d2.dept2_id
+    </select>
+    <resultMap id="Dept2Map" type="Dept2">
+        <id property="dept2_id" column="dept2_id"/>
+        <result property="name" column="dept2_name"/>
+        <association property="dept1" javaType="Dept1">
+            <id property="dept1_id" column="dept1_id"/>
+            <result property="name" column="dept1_name"/>
+            <result property="phone" column="phone"/>
+        </association>
+    </resultMap>
+</mapper>

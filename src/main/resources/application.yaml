@@ -1,0 +1,34 @@
+#########################################################
+#Tomcat容器（默认8080）
+server:
+  port: 80
+#########################################################
+
+
+#########################################################
+#数据源
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hospital?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+    username: root
+    password:
+    type: com.alibaba.druid.pool.DruidDataSource
+#########################################################
+
+
+#########################################################
+ #thymeleaf模板引擎
+  thymeleaf:
+    cache: false
+#########################################################
+
+
+#########################################################
+#Mybatis相关配置
+mybatis:
+  type-aliases-package: cn.wqk.manager.pojo
+  mapper-locations: mybatis/mapper/*Mapper.xml
+#########################################################
+
+

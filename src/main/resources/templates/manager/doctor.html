@@ -1,0 +1,442 @@
+<!--
+=========================================================
+Material Dashboard - v2.1.2
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-dashboard
+Copyright 2020 Creative Tim (https://www.creative-tim.com)
+Coded by Creative Tim
+
+=========================================================
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<script th:inline="javascript">
+  function uploadImg() {
+    //新建一个form表单对象
+    var form=new FormData();
+    //获取id为img的文件对象
+    var fileObj=document.getElementById("img").files[0];
+    //将文件对象装载到表单里
+    form.append("file",fileObj);
+    form.append("name",$("#name").val());
+    form.append("username",$("#userName").val());
+    form.append("password",$("#passWord").val());
+    form.append("age",$("#age").val());
+    form.append("sex",$("#sex").val());
+    form.append("dept2_id",$("#dept2_id").val());
+    form.append("phone",$("#phone").val());
+    form.append("information",$("#information").val());
+    //向后端发起post请求
+    $.post({
+      url:"/manager/newDoctor",
+      data:form,
+      cache:false,
+      async:false,
+      processData:false,
+      contentType:false,
+      //成功后的回调函数
+      success:function (data) {
+        md.showNotification('top','center',data);
+      },
+      //失败后的回调函数
+      error:function (data) {
+        md.showNotification('top','center',"新增医师失败，请联系管理员");
+      }
+    })
+  };
+  function checkUsername() {
+    if ($("#userName").val()!=""){
+      $.post({
+        url:"/checkUsername",
+        data:{username:$("#userName").val()},
+        success:function (data) {
+          if (data) {
+            $("#msg").text("✔可用");
+            $("#msg").css("color","green");
+          }else {
+            $("#msg").text("❌重复");
+            $("#msg").css("color","red");
+          }
+        }
+      })
+    }else {
+      $("#msg").text("");
+    }
+  };
+  $("#updateModal").modal("hide");
+  function setUpdate(DOCTOR) {
+    /*console.log(DOCTOR);
+    console.log(DOCTOR.user);*/
+    $("#updateImg1").attr('src',DOCTOR.imgPath);
+    $("#updateName").val(DOCTOR.name);
+    $("#updateUserName").val(DOCTOR.user.username);
+    $("#updatePassWord").val(DOCTOR.user.password);
+    $("#updateAge").val(DOCTOR.age);
+    $("#updateSex").val(DOCTOR.sex);
+    $("#updateDept2_id").val(DOCTOR.dept2_id);
+    $("#updatePhone").val(DOCTOR.phone);
+    $("#updateInformation").val(DOCTOR.information);
+    $("#updateDid").val(DOCTOR.did);
+  };
+  function updateDoctor() {
+    //新建一个form表单对象
+    var form=new FormData();
+    //将文件对象装载到表单里
+    form.append("did",$("#updateDid").val());
+    form.append("name",$("#updateName").val());
+    form.append("password",$("#updatePassWord").val());
+    form.append("age",$("#updateAge").val());
+    form.append("sex",$("#updateSex").val());
+    form.append("dept2_id",$("#updateDept2_id").val());
+    form.append("phone",$("#updatePhone").val());
+    form.append("information",$("#updateInformation").val());
+    $.post({
+      url:"/manager/updateDoctor",
+      data:form,
+      cache:false,
+      async:false,
+      processData:false,
+      contentType:false,
+      success:function (data) {
+        md.showNotification('top','center',data);
+      },
+      //失败后的回调函数
+      error:function (data) {
+        md.showNotification('top','center',"修改医师失败，请联系管理员");
+      }
+    })
+  }
+  $("#deleteModal").modal("hide");
+  function setDelete(DOCTOR) {
+    $("#deleteDid").val(DOCTOR.did);
+    $("#deleteName").val(DOCTOR.name);
+  }
+  function deleteDoctor() {
+    $.post({
+      url:"/manager/deleteDoctor",
+      data:{
+        did:$("#deleteDid").val()
+      },
+      success:function (data) {
+        md.showNotification('top','center',data);
+      },
+      //失败后的回调函数
+      error:function (data) {
+        md.showNotification('top','center',"删除医师失败，请联系管理员");
+      }
+    })
+  }
+</script>
+
+
+<head>
+  <!--head公共头部-->
+  <div th:insert="~{common::head(title='管理员您好')}"></div>
+</head>
+
+
+
+<body class="">
+  <div class="wrapper ">
+    <!--sidebar公共侧边栏-->
+    <div th:insert="~{common::sidebar(nav='manager/doctor')}"></div>
+    <!--end sidebar-->
+    <div class="main-panel">
+      <!-- navbar公共顶栏 -->
+      <div th:insert="~{common::navbar}"></div>
+      <!--end navbar-->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="align-content-center">
+                <!-- 按钮：用于打开模态框 -->
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                  新增医师
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">医师管理</h4>
+                  <p class="card-category"> 你可以在这里查看所有的医师信息</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class=" text-primary">
+                      <th>
+                        头像
+                      </th>
+                      <th>
+                        医师编号
+                      </th>
+                      <th>
+                        登录用户名
+                      </th>
+                      <th>
+                        登录密码
+                      </th>
+                      <th>
+                        医师名字
+                      </th>
+                      <th>
+                        所属科室
+                      </th>
+                      <th>
+                        医师年龄
+                      </th>
+                      <th>
+                        医师性别
+                      </th>
+                      <th>
+                        联系方式
+                      </th>
+                      <th>
+                        操作
+                      </th>
+                      </thead>
+                      <tbody>
+                      <tr th:each="doctor:${doctorInfoList}">
+                        <td>
+                          <div class="table-img">
+                            <img class="img" th:src="${doctor.getImgPath()}" />
+                          </div>
+                        </td>
+                        <td class="text-primary" th:text="${doctor.getDid()}">
+                          did
+                        </td>
+                        <td th:text="${doctor.getUser().getUsername()}">
+                          username
+                        </td>
+                        <td th:text="${doctor.getUser().getPassword()}">
+                          password
+                        </td>
+                        <td th:text="${doctor.getName()}">
+                          dname
+                        </td>
+                        <td th:text="${doctor.getDept2().getName()}">
+                          dept2
+                        </td>
+                        <td th:text="${doctor.getAge()}">
+                          age
+                        </td>
+                        <td th:text="${doctor.getSex()}">
+                          sex
+                        </td>
+                        <td th:text="${doctor.getPhone()}">
+                          phone
+                        </td>
+                        <td>
+                          <!-- 按钮：用于打开修改模态框 -->
+                          <button type="button" class="btn btn-normal pull-center" data-toggle="modal" data-target="#updateModal" th:onclick="setUpdate([[${doctor}]])">
+                            修改
+                          </button>
+                          <!-- 按钮：用于打开删除模态框 -->
+                          <button type="button" class="btn btn-danger pull-center" data-toggle="modal" data-target="#deleteModal" th:onclick="setDelete([[${doctor}]])">
+                            删除
+                          </button>
+                          <!--<a href="#" class="btn btn-normal pull-center">修改</a>
+                          <a href="#" class="btn btn-danger pull-center">删除</a>-->
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 新增医师模态框 -->
+      <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">新增医师</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="">
+                <!--图片接收框-->
+                <label>请上传医师头像</label>
+                <input type="file" name="img" id="img" class="form-control-file">
+              </div>
+              <div class="">
+                <label class="bmd-label">请输入医师的名字</label>
+                <input type="text" name="name" id="name" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label class="bmd-label">请输入医师的登录用户名</label>
+                <span id="msg"></span>
+                <input type="text" name="username" id="userName" class="form-control" autocomplete="off" onblur="checkUsername()" required>
+              </div>
+              <div class="">
+                <label class="bmd-label-static">请输入医师的登录密码</label>
+                <input type="password" name="password" id="passWord" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label>请输入医师的年龄</label>
+                <input type="number" name="age" id="age" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label>请输入医师的性别</label>
+                <select class="custom-select" id="sex">
+                  <option value="男">男</option>
+                  <option value="女">女</option>
+                </select>
+                <!--<input type="text" name="sex" id="sex" class="form-control" autocomplete="off">-->
+              </div>
+              <div class="">
+                <label>请为医师分配二类科室</label>
+                <select class="custom-select" id="dept2_id">
+                  <option th:each="dept2:${dept2List}" th:value="${dept2.getDept2_id()}" th:text="${dept2.getName()}">二类科室名</option>
+                </select>
+                <!--<input type="number" name="dept2_id" id="dept2_id" class="form-control" autocomplete="off">-->
+              </div>
+              <div class="">
+                <label>请输入医师的电话</label>
+                <input type="text" name="phone" id="phone" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label>请输入医师的个人详情</label>
+                <input type="text" name="information" id="information" class="form-control" autocomplete="off">
+              </div>
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="uploadImg()">确认</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- 修改医师模态框 -->
+      <div class="modal fade" id="updateModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">修改医师信息</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="">
+                <!--图片接收框-->
+                <label>头像</label>
+                <img class="img-container" id="updateImg1">
+                <input type="file" name="updateImg" id="updateImg2" class="form-control-file">
+              </div>
+              <div class="">
+                <label class="bmd-label">请确认医师的名字</label>
+                <input type="text" name="updateName" id="updateName" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label class="bmd-label">请确认医师的登录用户名</label>
+                <input type="text" name="updateUserName" id="updateUserName" class="form-control disabled" autocomplete="off" disabled>
+              </div>
+              <div class="">
+                <label class="bmd-label-static">修改医师的登录密码</label>
+                <input type="text" name="updatePassWord" id="updatePassWord" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label>修改医师的年龄</label>
+                <input type="number" name="updateAge" id="updateAge" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label>修改医师的性别</label>
+                <select class="custom-select" id="updateSex">
+                  <option value="男">男</option>
+                  <option value="女">女</option>
+                </select>
+                <!--<input type="text" name="sex" id="sex" class="form-control" autocomplete="off">-->
+              </div>
+              <div class="">
+                <label>修改医师分配二类科室</label>
+                <select class="custom-select" id="updateDept2_id">
+                  <option th:each="dept2:${dept2List}" th:value="${dept2.getDept2_id()}" th:text="${dept2.getName()}">二类科室名</option>
+                </select>
+                <!--<input type="number" name="dept2_id" id="dept2_id" class="form-control" autocomplete="off">-->
+              </div>
+              <div class="">
+                <label>修改医师的电话</label>
+                <input type="text" name="updatePhone" id="updatePhone" class="form-control" autocomplete="off">
+              </div>
+              <div class="">
+                <label>修改医师的个人详情</label>
+                <input type="text" name="updateInformation" id="updateInformation" class="form-control" autocomplete="off">
+              </div>
+            </div>
+            <input type="hidden" name="updateDid" id="updateDid">
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="updateDoctor()">确认修改</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- 删除医师模态框 -->
+      <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">删除医师</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="">
+                <label>确认要删除该医师？</label>
+                <input type="text" name="deleteName" id="deleteName" class="form-control disabled" disabled>
+              </div>
+              <input name="deleteDid" id="deleteDid" type="hidden">
+            </div>
+
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="deleteDoctor()">确认删除</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!--footer公共底栏-->
+      <div th:insert="~{common::footer}"></div>
+      <!--end footer-->
+    </div>
+  </div>
+  <!--plugin公共悬浮插件-->
+  <div th:insert="~{common::plugin}"></div>
+  <!--公共JS-->
+  <div th:insert="~{common::publicJs}"></div>
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
+    });
+  </script>
+</body>
+
+</html>

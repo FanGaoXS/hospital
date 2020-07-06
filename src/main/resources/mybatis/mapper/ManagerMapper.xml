@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.ManagerMapper">
+    <select id="selectAllManager" resultMap="ManagerMap">
+        SELECT
+            *
+        FROM
+            manager_info m,
+            user u
+        WHERE
+            m.mid=u.uid
+    </select>
+    <!--管理员信息结果集-->
+    <resultMap id="ManagerMap" type="ManagerInfo">
+        <id property="mid" column="mid"/>
+        <result property="name" column="mname"/>
+        <result property="sex" column="sex"/>
+        <association property="user" javaType="User">
+            <result property="username" column="username"/>
+            <result property="password" column="password"/>
+            <result property="permission" column="permission"/>
+        </association>
+    </resultMap>
+    <select id="selectManagerByMid" parameterType="integer" resultMap="ManagerMap">
+        SELECT
+            *
+        FROM
+            manager_info m,
+            user u
+        WHERE
+            m.mid=#{mid}
+        AND m.mid=u.uid
+    </select>
+    <insert id="insertManager" parameterType="ManagerInfo">
+        INSERT INTO
+            manager_info
+            (mid,mname,sex)
+        VALUES
+            (#{mid},#{name},#{sex})
+    </insert>
+    <update id="updateManager" parameterType="ManagerInfo">
+        UPDATE
+            manager_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test=" name!=null and name!='' ">
+                mname=#{name},
+            </if>
+            <if test=" sex!=null and sex!='' ">
+                sex=#{sex},
+            </if>
+        </trim>
+        WHERE
+            mid=#{mid}
+    </update>
+    <delete id="deleteManager" parameterType="integer">
+        DELETE
+        FROM
+            manager_info
+        WHERE
+            mid=#{mid}
+    </delete>
+</mapper>

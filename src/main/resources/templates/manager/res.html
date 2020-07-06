@@ -1,0 +1,162 @@
+<!--
+=========================================================
+Material Dashboard - v2.1.2
+=========================================================
+
+Product Page: https://www.creative-tim.com/product/material-dashboard
+Copyright 2020 Creative Tim (https://www.creative-tim.com)
+Coded by Creative Tim
+
+=========================================================
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <!--head公共头部-->
+  <div th:insert="~{common::head(title='管理员您好')}"></div>
+</head>
+
+<script>
+  function setDetail(RES) {
+    console.log(RES);
+  }
+</script>
+<body class="">
+  <div class="wrapper ">
+    <!--sidebar公共侧边栏-->
+    <div th:insert="~{common::sidebar(nav='manager/res')}"></div>
+    <!--end sidebar-->
+    <div class="main-panel">
+      <!-- navbar公共顶栏 -->
+      <div th:insert="~{common::navbar}"></div>
+      <!--end navbar-->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title ">预约管理</h4>
+                  <p class="card-category">你可以在这里查看所有的预约信息</p>
+                </div>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class=" text-primary">
+                      <th>
+                        预约编号
+                      </th>
+                      <th>
+                        预约人
+                      </th>
+                      <th>
+                        一类科室
+                      </th>
+                      <th>
+                        二类科室
+                      </th>
+                      <th>
+                        预约医师
+                      </th>
+                      <th>
+                        预约时间
+                      </th>
+                      <th>
+                        状态
+                      </th>
+                      <th>
+                        就诊时间
+                      </th>
+                      <th>
+                        操作
+                      </th>
+                      </thead>
+                      <tbody>
+                      <tr th:each="res:${reservedInfoList}">
+                        <td class="text-primary" th:text="${res.getRid()}">
+                          1
+                        </td>
+                        <td th:text="${res.getPatientInfo().getName()}">
+                          pname
+                        </td>
+                        <td th:text="${res.getDept1().getName()}">
+                          dept1_name
+                        </td>
+                        <td th:text="${res.getDept2().getName()}">
+                          dept2_name
+                        </td>
+                        <td th:text="${res.getDoctorInfo().getName()}">
+                          dname
+                        </td>
+                        <td th:text="${#dates.format(res.getTime(),'yyyy-MM-dd HH:mm')}">
+                          time
+                        </td>
+                        <td th:text="${res.getStatus()}" th:style="${res.getStatus()=='预约中'?'color: red':'color: blue'}">
+                          status
+                        </td>
+                        <td th:text="${#dates.format(res.getEndTime(),'yyyy-MM-dd HH:mm')}">
+                          time
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-normal" data-toggle="modal" data-target="#detailModal" th:onclick="setDetail([[${res}]])">
+                            详情
+                          </button>
+                          <!--<a href="#" class="btn btn-normal pull-center">修改</a>-->
+                          <a href="#" class="btn btn-danger pull-center">删除</a>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 修改医师模态框 -->
+      <div class="modal fade" id="detailModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+
+            <!-- 模态框头部 -->
+            <div class="modal-header">
+              <h4 class="modal-title">预约详情</h4>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+
+            </div>
+            <!-- 模态框底部 -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- end modal -->
+      <!--footer公共底栏-->
+      <div th:insert="~{common::footer}"></div>
+      <!--end footer-->
+    </div>
+  </div>
+  <!--plugin公共悬浮插件-->
+  <div th:insert="~{common::plugin}"></div>
+  <!--end plugin-->
+  <!--公共JS-->
+  <div th:insert="~{common::publicJs}"></div>
+  <!--end JS-->
+  <script>
+    $(document).ready(function() {
+      // Javascript method's body can be found in assets/js/demos.js
+      md.initDashboardPageCharts();
+
+    });
+  </script>
+</body>
+
+</html>

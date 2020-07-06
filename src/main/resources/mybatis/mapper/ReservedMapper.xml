@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.wqk.manager.mapper.ReservedMapper">
+    <!--查询所有预约信息-->
+    <select id="selectAllRes" parameterType="ReservedInfo" resultMap="ReservedMap">
+        SELECT
+            r.*,p.*,d.*,d1.*,d2.*
+        FROM
+            reserved_info r,
+            patient_info p,
+            doctor_info d,
+            dept1 d1,
+            dept2 d2,
+            dept1_dept2 d1_d2
+        WHERE
+            p.pid=r.pid
+        AND d.did=r.did
+        AND d2.dept2_id=d.dept2_id
+        AND d1_d2.dept2_id=d2.dept2_id
+        AND d1.dept1_id=d1_d2.dept1_id
+    </select>
+    <!--预约信息结果集-->
+    <resultMap id="ReservedMap" type="ReservedInfo">
+        <id property="rid" column="rid"/>
+        <result property="pid" column="pid"/>
+        <result property="did" column="did"/>
+        <result property="time" column="time"/>
+        <result property="status" column="status"/>
+        <result property="endTime" column="endTime"/>
+        <association property="patientInfo" javaType="PatientInfo">
+            <id property="pid" column="pid"/>
+            <result property="name" column="pname"/>
+        </association>
+        <association property="doctorInfo" javaType="DoctorInfo">
+            <id property="did" column="did"/>
+            <result property="name" column="dname"/>
+        </association>
+        <association property="dept1" javaType="Dept1">
+            <id property="dept1_id" column="dept1_id"/>
+            <result property="name" column="dept1_name"/>
+            <result property="phone" column="phone"/>
+        </association>
+        <association property="dept2" javaType="Dept2">
+            <id property="dept2_id" column="dept2_id"/>
+            <result property="name" column="dept2_name"/>
+        </association>
+    </resultMap>
+    <!--根据病人编号查询预约-->
+    <select id="selectResByDid" parameterType="integer" resultMap="ReservedMap">
+        SELECT
+            r.*,p.*,d.*,d1.*,d2.*
+        FROM
+            reserved_info r,
+            patient_info p,
+            doctor_info d,
+            dept1 d1,
+            dept2 d2,
+            dept1_dept2 d1_d2
+        WHERE
+            r.did=#{did}
+        AND p.pid=r.pid
+        AND d.did=r.did
+        AND d2.dept2_id=d.dept2_id
+        AND d1_d2.dept2_id=d2.dept2_id
+        AND d1.dept1_id=d1_d2.dept1_id
+    </select>
+    <!--根据医师编号查询预约-->
+    <select id="selectResByPid" parameterType="integer" resultMap="ReservedMap">
+        SELECT
+            r.*,p.*,d.*,d1.*,d2.*
+        FROM
+            reserved_info r,
+            patient_info p,
+            doctor_info d,
+            dept1 d1,
+            dept2 d2,
+            dept1_dept2 d1_d2
+        WHERE
+            r.pid=#{pid}
+        AND p.pid=r.pid
+        AND d.did=r.did
+        AND d2.dept2_id=d.dept2_id
+        AND d1_d2.dept2_id=d2.dept2_id
+        AND d1.dept1_id=d1_d2.dept1_id
+    </select>
+    <!--删除预约-->
+    <delete id="deleteRes" parameterType="integer">
+        DELETE
+        FROM
+            reserved_info
+        WHERE
+            rid=#{rid}
+    </delete>
+    <!--新增预约-->
+    <insert id="insertRes" parameterType="ReservedInfo" useGeneratedKeys="true" keyProperty="rid">
+        INSERT INTO
+            reserved_info
+            (pid,did,time,status)
+        VALUES
+            (#{pid},#{did},#{time},#{status})
+    </insert>
+    <!--修改预约-->
+    <update id="updateRes" parameterType="ReservedInfo">
+        UPDATE
+            reserved_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test=" pid!=null and pid!='' ">
+                pid=#{pid},
+            </if>
+            <if test=" did!=null and did!='' ">
+                did=#{did},
+            </if>
+            <if test=" time!=null and time!='' ">
+                time=#{time},
+            </if>
+            <if test=" status!=null and status!='' ">
+                status=#{status},
+            </if>
+        </trim>
+        WHERE
+            rid=#{rid}
+    </update>
+</mapper>
