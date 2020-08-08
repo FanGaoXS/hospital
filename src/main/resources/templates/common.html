@@ -32,7 +32,7 @@
       Tip 2: you can also add an image using data-image tag
     -->
     <div class="logo"><a href="http://www.creative-tim.com" class="simple-text logo-normal">
-        Creative Tim
+        <shiro:principal property="permission"/>
     </a></div>
     <div class="sidebar-wrapper">
         <ul class="nav">
@@ -177,7 +177,7 @@
 <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " th:fragment="navbar">
     <div class="container-fluid">
         <div class="navbar-wrapper">
-            <a class="navbar-brand" href="javascript:;">Dashboard</a>
+            <!--<a class="navbar-brand" href="javascript:;">Dashboard</a>-->
         </div>
         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
@@ -248,22 +248,22 @@
             <ul>
                 <li>
                     <a href="https://www.creative-tim.com">
-                        Creative Tim
+                        Creative Tim团队
                     </a>
                 </li>
                 <li>
                     <a href="https://creative-tim.com/presentation">
-                        About Us
+                        关于Creative Tim团队
                     </a>
                 </li>
                 <li>
                     <a href="http://blog.creative-tim.com">
-                        Blog
+                        博客
                     </a>
                 </li>
                 <li>
                     <a href="https://www.creative-tim.com/license">
-                        Licenses
+                        开源协议
                     </a>
                 </li>
             </ul>
@@ -272,8 +272,8 @@
             &copy;
             <script>
                 document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons">favorite</i> by
-            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+            </script>, 由 <i class="material-icons">favorite</i>
+            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> 打造。
         </div>
     </div>
 </footer>

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <!--head公共头部-->
-  <div th:insert="~{common::head}"></div>
+  <div th:insert="~{common::head(titile='注册')}"></div>
   <!--Ajax判断注册的用户名是否重复-->
   <script>
     function checkUsername() {
@@ -45,13 +45,13 @@
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="../examples/dashboard.html">
-              Back to Dashboard
+            <a class="nav-link" href="#">
+              回到首页
             </a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="https://github.com/creativetimofficial/material-dashboard/issues" target="_blank">
-              Have an issue?
+              去Github上提交issue
             </a>
           </li>
         </ul>
@@ -60,7 +60,7 @@
   </nav>
   <!-- End Navbar -->
   <div class="page-header clear-filter">
-    <div class="page-header-image" style="background-image: url('/img/cover.jpg');"></div>
+    <div class="page-header-image" style="background-image: url('img/timg.jpg');"></div>
     <div class="content-center">
       <div class="col-md-8 ml-auto mr-auto">
         <div class="card">

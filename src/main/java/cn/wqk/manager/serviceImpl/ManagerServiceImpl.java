@@ -82,7 +82,7 @@ public class ManagerServiceImpl implements ManagerService {
             userMapper.insertUser(user);
             doctorInfo.setDid(user.getUid());
             String fileName = Integer.toString(user.getUid());
-            String fileDir="/img/doctor/";
+            String fileDir="/hospital/img/doctor/";
             String imgPath = FileUtils.uploadFile(file, fileDir,fileName);
             doctorInfo.setImgPath(imgPath);
             doctorMapper.insertDoctor(doctorInfo);

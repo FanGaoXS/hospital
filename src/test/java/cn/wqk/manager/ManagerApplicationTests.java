@@ -3,7 +3,6 @@ package cn.wqk.manager;
 import cn.wqk.manager.mapper.DoctorMapper;
 import cn.wqk.manager.mapper.DutyMapper;
 import cn.wqk.manager.mapper.UserMapper;
-import cn.wqk.manager.pojo.DoctorInfo;
 import cn.wqk.manager.pojo.Duty;
 import cn.wqk.manager.service.PatientService;
 import org.junit.jupiter.api.Test;
@@ -26,8 +25,5 @@ class ManagerApplicationTests {
     private Duty duty;
     @Test
     void contextLoads() {
-        duty.setDid(10);
-        duty.setThursdayA(4);
-        dutyMapper.updateDutyByDid(duty);
     }
 }
